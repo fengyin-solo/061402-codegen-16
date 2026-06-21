@@ -5,129 +5,157 @@
       <p>在荒岛上建立你的生存基地</p>
     </div>
     
-    <div class="island-main">
-      <div class="stats-panel">
-        <div class="stat-card">
-          <div class="stat-icon">🍖</div>
-          <div class="stat-content">
-            <div class="stat-number">{{ resources.food }}</div>
-            <div class="stat-label">食物</div>
+    <div class="game-tabs">
+      <div class="tab" :class="{ active: activeTab === 'survival' }" @click="activeTab = 'survival'">
+        🌴 生存
+      </div>
+      <div class="tab" :class="{ active: activeTab === 'defense' }" @click="activeTab = 'defense'">
+        🛡️ 警戒
+      </div>
+    </div>
+    
+    <div v-show="activeTab === 'survival'">
+      <div class="island-main">
+        <div class="stats-panel">
+          <div class="stat-card">
+            <div class="stat-icon">🍖</div>
+            <div class="stat-content">
+              <div class="stat-number">{{ resources.food }}</div>
+              <div class="stat-label">食物</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">💧</div>
+            <div class="stat-content">
+              <div class="stat-number">{{ resources.water }}</div>
+              <div class="stat-label">淡水</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">🪵</div>
+            <div class="stat-content">
+              <div class="stat-number">{{ resources.wood }}</div>
+              <div class="stat-label">木材</div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">⛏️</div>
+            <div class="stat-content">
+              <div class="stat-number">{{ resources.stone }}</div>
+              <div class="stat-label">石头</div>
+            </div>
           </div>
         </div>
         
-        <div class="stat-card">
-          <div class="stat-icon">💧</div>
-          <div class="stat-content">
-            <div class="stat-number">{{ resources.water }}</div>
-            <div class="stat-label">淡水</div>
+        <div class="actions-panel">
+          <h3>📋 可执行操作</h3>
+          
+          <div class="action-grid">
+            <div class="action-card" @click="gatherFood">
+              <div class="action-icon">🍓</div>
+              <div class="action-title">采集食物</div>
+              <div class="action-desc">在岛上寻找可食用的果实和动物</div>
+              <div class="action-time">耗时: 30秒</div>
+            </div>
+            
+            <div class="action-card" @click="collectWater">
+              <div class="action-icon">💧</div>
+              <div class="action-title">收集淡水</div>
+              <div class="action-desc">收集雨水或净化海水</div>
+              <div class="action-time">耗时: 1分钟</div>
+            </div>
+            
+            <div class="action-card" @click="chopWood">
+              <div class="action-icon">🪓</div>
+              <div class="action-title">砍伐木材</div>
+              <div class="action-desc">砍伐树木获取木材资源</div>
+              <div class="action-time">耗时: 2分钟</div>
+            </div>
+            
+            <div class="action-card" @click="mineStone">
+              <div class="action-icon">⛏️</div>
+              <div class="action-title">挖掘石头</div>
+              <div class="action-desc">在岛上挖掘石头资源</div>
+              <div class="action-time">耗时: 3分钟</div>
+            </div>
+            
+            <div class="action-card" @click="buildShelter">
+              <div class="action-icon">🏠</div>
+              <div class="action-title">建造庇护所</div>
+              <div class="action-desc">建造一个安全的住所</div>
+              <div class="action-cost">需要: 50木材, 30石头</div>
+            </div>
+            
+            <div class="action-card" @click="craftTools">
+              <div class="action-icon">🔨</div>
+              <div class="action-title">制作工具</div>
+              <div class="action-desc">制作更高效的生存工具</div>
+              <div class="action-cost">需要: 20木材, 10石头</div>
+            </div>
           </div>
         </div>
         
-        <div class="stat-card">
-          <div class="stat-icon">🪵</div>
-          <div class="stat-content">
-            <div class="stat-number">{{ resources.wood }}</div>
-            <div class="stat-label">木材</div>
-          </div>
-        </div>
-        
-        <div class="stat-card">
-          <div class="stat-icon">⛏️</div>
-          <div class="stat-content">
-            <div class="stat-number">{{ resources.stone }}</div>
-            <div class="stat-label">石头</div>
+        <div class="map-panel">
+          <h3>🗺️ 海岛地图</h3>
+          <div class="map-container">
+            <div class="map-grid">
+              <div v-for="(cell, index) in mapGrid" :key="index" 
+                   :class="'map-cell ' + cell.type"
+                   @click="exploreCell(index)">
+                {{ cell.icon }}
+              </div>
+            </div>
+            <div class="map-legend">
+              <div class="legend-item">
+                <span class="legend-icon">🌳</span>
+                <span>森林</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-icon">🏔️</span>
+                <span>山地</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-icon">🌊</span>
+                <span>海洋</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-icon">🏠</span>
+                <span>营地</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       
-      <div class="actions-panel">
-        <h3>📋 可执行操作</h3>
-        
-        <div class="action-grid">
-          <div class="action-card" @click="gatherFood">
-            <div class="action-icon">🍓</div>
-            <div class="action-title">采集食物</div>
-            <div class="action-desc">在岛上寻找可食用的果实和动物</div>
-            <div class="action-time">耗时: 30秒</div>
-          </div>
-          
-          <div class="action-card" @click="collectWater">
-            <div class="action-icon">💧</div>
-            <div class="action-title">收集淡水</div>
-            <div class="action-desc">收集雨水或净化海水</div>
-            <div class="action-time">耗时: 1分钟</div>
-          </div>
-          
-          <div class="action-card" @click="chopWood">
-            <div class="action-icon">🪓</div>
-            <div class="action-title">砍伐木材</div>
-            <div class="action-desc">砍伐树木获取木材资源</div>
-            <div class="action-time">耗时: 2分钟</div>
-          </div>
-          
-          <div class="action-card" @click="mineStone">
-            <div class="action-icon">⛏️</div>
-            <div class="action-title">挖掘石头</div>
-            <div class="action-desc">在岛上挖掘石头资源</div>
-            <div class="action-time">耗时: 3分钟</div>
-          </div>
-          
-          <div class="action-card" @click="buildShelter">
-            <div class="action-icon">🏠</div>
-            <div class="action-title">建造庇护所</div>
-            <div class="action-desc">建造一个安全的住所</div>
-            <div class="action-cost">需要: 50木材, 30石头</div>
-          </div>
-          
-          <div class="action-card" @click="craftTools">
-            <div class="action-icon">🔨</div>
-            <div class="action-title">制作工具</div>
-            <div class="action-desc">制作更高效的生存工具</div>
-            <div class="action-cost">需要: 20木材, 10石头</div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="map-panel">
-        <h3>🗺️ 海岛地图</h3>
-        <div class="map-container">
-          <div class="map-grid">
-            <div v-for="(cell, index) in mapGrid" :key="index" 
-                 :class="'map-cell ' + cell.type"
-                 @click="exploreCell(index)">
-              {{ cell.icon }}
-            </div>
-          </div>
-          <div class="map-legend">
-            <div class="legend-item">
-              <span class="legend-icon">🌳</span>
-              <span>森林</span>
-            </div>
-            <div class="legend-item">
-              <span class="legend-icon">🏔️</span>
-              <span>山地</span>
-            </div>
-            <div class="legend-item">
-              <span class="legend-icon">🌊</span>
-              <span>海洋</span>
-            </div>
-            <div class="legend-item">
-              <span class="legend-icon">🏠</span>
-              <span>营地</span>
-            </div>
+      <div class="message-log">
+        <h3>📜 生存日志</h3>
+        <div class="log-list">
+          <div v-for="(msg, index) in messageLog" :key="index" class="log-item">
+            <span class="log-time">{{ msg.time }}</span>
+            <span class="log-content">{{ msg.content }}</span>
           </div>
         </div>
       </div>
     </div>
     
-    <div class="message-log">
-      <h3>📜 生存日志</h3>
-      <div class="log-list">
-        <div v-for="(msg, index) in messageLog" :key="index" class="log-item">
-          <span class="log-time">{{ msg.time }}</span>
-          <span class="log-content">{{ msg.content }}</span>
-        </div>
-      </div>
+    <div class="defense-main" v-show="activeTab === 'defense'">
+      <el-tabs v-model="defenseTab" type="card">
+        <el-tab-pane label="⚔️ 哨位布防" name="sentry">
+          <SentryPosts :resources="resources" @resources-updated="handleResourcesUpdated" />
+        </el-tab-pane>
+        <el-tab-pane label="🌙 守夜排班" name="watch">
+          <NightWatch />
+        </el-tab-pane>
+        <el-tab-pane label="🎒 应急物资" name="supplies">
+          <EmergencySupplies :resources="resources" @resources-updated="handleResourcesUpdated" />
+        </el-tab-pane>
+        <el-tab-pane label="⚔️ 夜袭战斗" name="battle">
+          <NightBattle @day-advanced="handleDayAdvanced" @battle-completed="handleBattleCompleted" />
+        </el-tab-pane>
+      </el-tabs>
     </div>
   </div>
 </template>
@@ -135,6 +163,15 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { useDefenseStore } from '../store';
+import SentryPosts from '../components/defense/SentryPosts.vue';
+import NightWatch from '../components/defense/NightWatch.vue';
+import EmergencySupplies from '../components/defense/EmergencySupplies.vue';
+import NightBattle from '../components/defense/NightBattle.vue';
+
+const activeTab = ref('survival');
+const defenseTab = ref('sentry');
+const defenseStore = useDefenseStore();
 
 const resources = ref({
   food: 100,
@@ -163,14 +200,12 @@ const addMessage = (content) => {
   const now = new Date();
   const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
   messageLog.value.push({ time, content });
-  // 只保留最近20条日志
   if (messageLog.value.length > 20) {
     messageLog.value.shift();
   }
 };
 
 const performAction = (name, cost, gain, time) => {
-  // 检查资源是否足够
   for (const [resource, amount] of Object.entries(cost)) {
     if (resources.value[resource] < amount) {
       ElMessage.error(`资源不足，无法${name}`);
@@ -178,16 +213,13 @@ const performAction = (name, cost, gain, time) => {
     }
   }
   
-  // 消耗资源
   for (const [resource, amount] of Object.entries(cost)) {
     resources.value[resource] -= amount;
   }
   
   addMessage(`开始${name}...`);
   
-  // 模拟耗时
   setTimeout(() => {
-    // 获得资源
     for (const [resource, amount] of Object.entries(gain)) {
       resources.value[resource] += amount;
     }
@@ -247,7 +279,6 @@ const exploreCell = (index) => {
     setTimeout(() => {
       cell.explored = true;
       
-      // 随机事件
       const random = Math.random();
       if (random < 0.3) {
         const foodGain = Math.floor(Math.random() * 20) + 10;
@@ -276,9 +307,31 @@ const exploreCell = (index) => {
   });
 };
 
+const handleResourcesUpdated = () => {
+  addMessage('资源已更新');
+};
+
+const handleDayAdvanced = () => {
+  addMessage(`进入第 ${defenseStore.currentDay} 天`);
+};
+
+const handleBattleCompleted = (result) => {
+  if (result.victory) {
+    addMessage(`夜袭防守成功！击败 ${result.enemiesDefeated} 名敌人`);
+  } else {
+    addMessage(`夜袭防守失败！损失惨重...`);
+  }
+  if (result.injuredSurvivors.length > 0) {
+    addMessage(`${result.injuredSurvivors.length} 名幸存者受伤`);
+  }
+  if (result.buildingDamage.length > 0) {
+    addMessage(`${result.buildingDamage.length} 处建筑受损`);
+  }
+};
+
 onMounted(() => {
   addMessage('欢迎来到海岛生存游戏！');
-  // 定期消耗资源
+  defenseStore.updateOverallDefense();
   setInterval(() => {
     resources.value.food -= 5;
     resources.value.water -= 5;
@@ -299,7 +352,7 @@ onMounted(() => {
         addMessage('重新开始游戏！');
       });
     }
-  }, 60000); // 每分钟消耗一次
+  }, 60000);
 });
 </script>
 
@@ -308,6 +361,66 @@ onMounted(() => {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 20px;
+}
+
+.game-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 12px 30px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.tab.active {
+  background: white;
+  color: #667eea;
+  border-color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.defense-main {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.defense-main :deep(.el-tabs) {
+  background: transparent;
+}
+
+.defense-main :deep(.el-tabs__header) {
+  background: white;
+  border-radius: 8px 8px 0 0;
+  padding: 0 20px;
+  margin: 0;
+}
+
+.defense-main :deep(.el-tabs__nav-wrap::after) {
+  display: none;
+}
+
+.defense-main :deep(.el-tabs__item) {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.defense-main :deep(.el-tabs__content) {
+  padding-top: 20px;
 }
 
 .island-header {
@@ -502,6 +615,8 @@ onMounted(() => {
   border-radius: 12px;
   padding: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .message-log h3 {
